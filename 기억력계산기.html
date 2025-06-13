@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>기억력 테스트기</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; }
+    #wordsBox, #inputBox, #resultBox { margin-top: 30px; font-size: 20px; }
+    textarea { width: 80%; height: 150px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 18px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 기억력 테스트</h1>
+  <p>30초간 단어 10개가 보여집니다. 잘 기억한 뒤 사라지면 입력해보세요!</p>
+  <button onclick="startTest()">시작하기</button>
+
+  <div id="wordsBox"></div>
+  <div id="inputBox" style="display:none;">
+    <p>기억나는 단어들을 써보세요 (한 줄에 하나씩)</p>
+    <textarea id="userInput"></textarea><br>
+    <button onclick="checkAnswer()">제출하기</button>
+  </div>
+  <div id="resultBox"></div>
+
+  <script>
+    const wordList = [
+      "사과", "자동차", "달력", "학교", "의자",
+      "고양이", "커피", "핸드폰", "자전거", "열쇠",
+      "나무", "강아지", "신발", "텔레비전", "시계",
+      "노트북", "컵", "책상", "창문", "버스"
+    ];
+    let selectedWords = [];
+
+    function startTest() {
+      // 랜덤 단어 10개 선택
+      selectedWords = [];
+      const shuffled = [...wordList].sort(() => 0.5 - Math.random());
+      selectedWords = shuffled.slice(0, 10);
+
+      // 보여주기
+      document.getElementById("wordsBox").innerText = selectedWords.join("  ");
+      document.getElementById("wordsBox").style.display = "block";
+      document.getElementById("inputBox").style.display = "none";
+      document.getElementById("resultBox").innerText = "";
+
+      // 30초 후 숨기기
+      setTimeout(() => {
+        document.getElementById("wordsBox").style.display = "none";
+        document.getElementById("inputBox").style.display = "block";
+      }, 30000);
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById("userInput").value.trim();
+      const userWords = input.split("\n").map(w => w.trim()).filter(w => w);
+      const correct = userWords.filter(word => selectedWords.includes(word));
+      const uniqueCorrect = [...new Set(correct)];
+
+      document.getElementById("resultBox").innerHTML = `
+        ✅ ${uniqueCorrect.length}개 맞췄습니다!<br>
+        정답: ${selectedWords.join(", ")}<br>
+        당신의 입력: ${userWords.join(", ")}<br>
+        맞춘 단어: ${uniqueCorrect.join(", ")}
+      `;
+    }
+  </script>
+
+</body>
+</html>
