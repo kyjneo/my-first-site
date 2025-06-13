@@ -1,21 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <title>D-day 계산기</title>
   <meta charset="UTF-8">
+  <title>D-day 계산기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    input, button {
+      font-size: 16px;
+      padding: 8px;
+      margin: 10px;
+    }
+    #result {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <h1>D-day 계산기</h1>
-  <input type="date" id="dateInput" />
-  <button onclick="calculate()">계산하기</button>
-  <p id="result"></p>
+  <p>날짜를 선택하세요:</p>
+  <input type="date" id="dateInput">
+  <br>
+  <button onclick="calculateDday()">D-day 계산</button>
+
+  <p id="result">📅</p>
 
   <script>
-    function calculate() {
-      const inputDate = new Date(document.getElementById('dateInput').value);
+    function calculateDday() {
+      const input = document.getElementById("dateInput").value;
+      if (!input) {
+        document.getElementById("result").innerText = "날짜를 선택하세요!";
+        return;
+      }
+
       const today = new Date();
-      const diff = Math.ceil((inputDate - today) / (1000 * 60 * 60 * 24));
-      document.getElementById('result').innerText = `D-${diff}`;
+      const targetDate = new Date(input);
+      
+      // 시차 보정 (UTC 기준 날짜 차이 방지)
+      today.setHours(0, 0, 0, 0);
+      targetDate.setHours(0, 0, 0, 0);
+
+      const diffTime = targetDate - today;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      let message = "";
+      if (diffDays > 0) {
+        message = `D-${diffDays}`;
+      } else if (diffDays === 0) {
+        message = "🎉 오늘이 D-day입니다!";
+      } else {
+        message = `D+${Math.abs(diffDays)}`;
+      }
+
+      document.getElementById("result").innerText = message;
     }
   </script>
 </body>
